@@ -1,0 +1,62 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define FILENAME "Personne.csv"
+
+typedef struct {
+      char nom[250] ;
+      char prenom[250];
+      char tel[50];
+      char genre[50];
+}Personne;
+
+void ajouter_fichier()
+{   
+     FILE *f = fopen(FILENAME,"a");
+    if(f == NULL){
+               printf("Il y a une erreur de fichier");
+               exit(1);
+     }
+     Personne p;
+     printf("Nom:"); scanf("%s",p.nom);
+     printf("Prenom:"); scanf("%s",p.prenom);
+     printf("Telephone:"); scanf("%s",p.tel);
+     printf("Genre:"); scanf("%s",p.genre);
+
+    fprintf(f,"%s\t%s\t%s\t%s\n" , p.nom,p.prenom,p.tel,p.genre);
+
+    fclose(f);
+
+}
+
+void affiche_fichier()
+{
+    FILE *f =fopen(FILENAME,"r");
+    if (f == NULL){
+        printf("Le fichier est Vide");
+        exit(1);
+    }
+    Personne p;
+while (fscanf(f, "%s %s %s %s", p.nom, p.prenom, p.tel, p.genre) != EOF) {
+        printf("%s %s | %s | %s\n", p.nom, p.prenom, p.tel, p.genre);
+    }
+
+
+   // while (fscanf(f,"%s %s %s %s ",p.nom,p.prenom,p.tel,p.genre) != EOF){
+   // printf(" %s %s %s %s \n", p.nom, p.prenom, p.tel, p.genre);
+   // }
+    fclose(f);
+
+}
+
+
+
+
+int main()
+{
+    ajouter_fichier();
+    affiche_fichier();
+
+    return 0;
+}
