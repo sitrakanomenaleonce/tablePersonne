@@ -1,0 +1,117 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define FILENAME "Personne.csv"
+
+typedef struct {
+      char nom[250] ;
+      char prenom[250];
+      char tel[50];
+      char genre[50];
+}Personne;
+
+void ajouter_fichier()
+{   
+     FILE *f = fopen(FILENAME,"a");                                                              
+    if(f == NULL){
+               printf("Il y a une erreur de fichier");
+               exit(1);
+     }
+
+     Personne p;
+     printf("Nom:"); scanf("%s",p.nom);
+     printf("Prenom:"); scanf("%s",p.prenom);
+     printf("Telephone:"); scanf("%s",p.tel);
+     printf("Genre:"); scanf("%s",p.genre);
+    fprintf(f,"%s\t%s\t%s\t%s\n" , p.nom,p.prenom,p.tel,p.genre);
+
+    fclose(f);
+
+}
+
+void affiche_fichier()
+{
+    FILE *f =fopen(FILENAME,"r");
+    if (f == NULL){
+        printf("Le fichier est Vide");
+        exit(1);
+    }
+    Personne p;
+
+    printf("La liste de toutes les personnes:\n");
+    printf("NOM\t\tPRENOM\t\t\tTELEPHONE\t\tGENRE\t\n");
+    
+ 
+while (fscanf(f, "%s %s %s %s", p.nom, p.prenom, p.tel, p.genre) != EOF) {
+        printf("%-15s |  %-15s | %-20s | %-10s\n", p.nom, p.prenom, p.tel, p.genre);
+    }
+
+    fclose(f);
+
+}
+
+void recherche()
+{
+    FILE *f = fopen(FILENAME,"r");
+    Personne p;
+    char recherche[50];
+    printf("entrer le nom a rechercher:");
+    scanf("%s",recherche);
+    int trouve = 0;
+    while(fscanf(f,"%s %s %s %s",p.nom,p.prenom,p.tel,p.genre)!=EOF){
+        if (strcmp(p.nom, recherche) == 0)
+        {
+            printf("On trouve: %-15s |  %-15s | %-20s | %-10s\n", p.nom, p.prenom, p.tel, p.genre);
+            trouve = 1;
+        }
+    }
+
+    if (!trouve) printf("Contact non trouve.\n");                        //si trouve=0 pas de chgmnt en 1
+
+    fclose(f);
+        
+}
+
+
+void supprimer() {
+    FILE *f = fopen(FILENAME, "r");
+    if (!f) {
+        printf("Impossible d'ouvrir le fichier.\n");
+        return;
+    }
+    FILE *temp = fopen("temp.csv", "w");
+    if (!temp) {
+        printf("Impossible de creer le fichier temporaire.\n");
+        fclose(f);
+        return;
+    }
+    Personne p;
+    char recherche[50];
+    printf("Entrez le nom a supprimer: ");
+    scanf("%s", recherche);
+    while (fscanf(f, "%s %s %s %s\n",
+                  p.nom, p.prenom, p.tel, p.genre) != EOF) {
+        if (strcmp(p.nom, recherche) != 0) {
+            fprintf(temp, "%s,%s,%s,%s\n", p.nom, p.prenom, p.tel, p.genre);
+        }
+    }
+    fclose(f);
+    fclose(temp);
+    remove(FILENAME);
+    rename("temp.csv", FILENAME);
+    printf("La Suppression est effectuee.\n");
+}
+
+
+
+
+int main()
+{
+    ajouter_fichier();
+    affiche_fichier();
+    recherche();
+    supprimer() ;
+    
+    return 0;
+}   
